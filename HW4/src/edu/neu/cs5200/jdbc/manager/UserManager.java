@@ -1,31 +1,41 @@
 package edu.neu.cs5200.jdbc.manager;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Connection; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import edu.neu.cs5200.jdbc.entity.User;
 
 public class UserManager {
 	static java.util.Date today = new java.util.Date();
 	static java.sql.Date date = new java.sql.Date(today.getTime());
-	public Connection getConnection(){
-		Connection connection = null;
+	DataSource ds;
+	public UserManager(){
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/movieschema" , "root" , "abcusa123");
-		} catch (SQLException e) {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		return connection;
 	}
 	public void createUser(User newUser) throws SQLException{
 		Connection connection = null;
 		String sql = "insert into user values (?,?,?,?,?,?)";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newUser.getUserName());
 			statement.setString(2, newUser.getPassword());
@@ -40,13 +50,13 @@ public class UserManager {
 		}finally{
 			connection.close();
 		}
-	};
+	}
 	public List<User> readAllUsers() throws SQLException{
 		List<User> users = new ArrayList<User>();
 		Connection connection = null;
 		String sql = "select * from user";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 		    ResultSet rs = statement.executeQuery(sql);
 		    
@@ -67,13 +77,13 @@ public class UserManager {
 			connection.close();
 		}
 		return users;
-	};
+	}
 	public User readUser(String username) throws SQLException{
 		User user = new User();
 		Connection connection = null;
 		String sql = "select * from user where username = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 			ResultSet rs = statement.executeQuery();
@@ -93,12 +103,12 @@ public class UserManager {
 			connection.close();
 		}
 		return user;
-	};
+	}
 	public void updateUser(String username, User user) throws SQLException{
 		Connection connection = null;
 		String sql = "update User set password = ?, firstname = ?, lastname = ?, email = ? where username = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, user.getUserName());
 			statement.setString(2, user.getPassword());
@@ -113,12 +123,12 @@ public class UserManager {
 		}finally{
 			connection.close();
 		}
-	};
+	}
 	public void deleteUser(String username) throws SQLException{
 		Connection connection = null;
 		String sql = "delete from User where username = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 			statement.execute();
@@ -128,6 +138,5 @@ public class UserManager {
 		}finally{
 			connection.close();
 		}
-	};
-
+	}
 }

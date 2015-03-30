@@ -1,32 +1,41 @@
 package edu.neu.cs5200.jdbc.manager;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Connection; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import edu.neu.cs5200.jdbc.entity.Comment;
 
 public class CommentManager {
 	static java.util.Date today = new java.util.Date();
 	static java.sql.Date date = new java.sql.Date(today.getTime());
-	public Connection getConnection(){
-		Connection connection = null;
+	DataSource ds;
+	public CommentManager(){
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/movieschema" , "root" , "abcusa123");
-		} catch (SQLException e) {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		return connection;
 	}
 	public void createComment(Comment newComment) throws SQLException{
 		Connection connection = null;
 		String sql = "insert into comment values (?,?,?,?)";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newComment.getComment());
 			statement.setString(2, newComment.getMovieID());
@@ -45,7 +54,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "select * from comment";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 		    ResultSet rs = statement.executeQuery(sql);
 		    
@@ -70,7 +79,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "select * from comment where userid = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 		    ResultSet rs = statement.executeQuery(sql);
@@ -96,7 +105,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "select * from comment where movieid = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, movieId);
 		    ResultSet rs = statement.executeQuery(sql);
@@ -122,7 +131,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "select * from comment where comment = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, commentId);
 			ResultSet rs = statement.executeQuery();
@@ -144,7 +153,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "update Comment set comment = ?, date = ? where comment = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newComment);
 			statement.setDate(2, date);
@@ -161,7 +170,7 @@ public class CommentManager {
 		Connection connection = null;
 		String sql = "delete from Comment where comment = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, commentId);
 			statement.execute();

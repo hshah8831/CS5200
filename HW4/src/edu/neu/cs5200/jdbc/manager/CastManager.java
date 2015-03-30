@@ -1,32 +1,41 @@
 package edu.neu.cs5200.jdbc.manager;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import edu.neu.cs5200.jdbc.entity.Cast;
 
 public class CastManager {
 	static java.util.Date today = new java.util.Date();
 	static java.sql.Date date = new java.sql.Date(today.getTime());
-	public Connection getConnection(){
-		Connection connection = null;
+	DataSource ds;
+	public CastManager(){
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/movieschema" , "root" , "abcusa123");
-		} catch (SQLException e) {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		return connection;
 	}
 	public void createCast(Cast newCast) throws SQLException{
 		Connection connection = null;
 		String sql = "insert into cast values (?,?,?)";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newCast.getCharacterName());
 			statement.setString(2, newCast.getMovieID());
@@ -44,7 +53,7 @@ public class CastManager {
 		Connection connection = null;
 		String sql = "select * from cast";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 		    ResultSet rs = statement.executeQuery(sql);
 		    
@@ -68,7 +77,7 @@ public class CastManager {
 		Connection connection = null;
 		String sql = "select * from cast where actorid = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, actorId);
 		    ResultSet rs = statement.executeQuery(sql);
@@ -93,7 +102,7 @@ public class CastManager {
 		Connection connection = null;
 		String sql = "select * from cast where movieid = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, movieId);
 		    ResultSet rs = statement.executeQuery(sql);
@@ -118,7 +127,7 @@ public class CastManager {
     	Cast cast = new Cast();
 		String sql = "select * from cast where charactername = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, castId);
 		    ResultSet rs = statement.executeQuery(sql);
@@ -141,7 +150,7 @@ public class CastManager {
 		Connection connection = null;
 		String sql = "update cast set charactername = ?, movieid = ?, actorid = ? where charactername = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newCast.getCharacterName());
 			statement.setString(2, newCast.getMovieID());
@@ -159,7 +168,7 @@ public class CastManager {
 		Connection connection = null;
 		String sql = "delete from Cast where charactername = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, castId);
 			statement.execute();

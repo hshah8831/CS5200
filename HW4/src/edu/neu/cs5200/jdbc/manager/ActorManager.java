@@ -1,32 +1,41 @@
 package edu.neu.cs5200.jdbc.manager;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import edu.neu.cs5200.jdbc.entity.Actor;
 
 public class ActorManager {
 	static java.util.Date today = new java.util.Date();
 	static java.sql.Date date = new java.sql.Date(today.getTime());
-	public Connection getConnection(){
-		Connection connection = null;
+	DataSource ds;
+	public ActorManager(){
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/movieschema" , "root" , "abcusa123");
-		} catch (SQLException e) {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		return connection;
 	}
 	public void createActor(Actor newActor) throws SQLException{
 		Connection connection = null;
 		String sql = "insert into actor values (?,?,?,?)";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newActor.getID());
 			statement.setString(2, newActor.getFirstName());
@@ -45,7 +54,7 @@ public class ActorManager {
 		Connection connection = null;
 		String sql = "select * from actor";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 		    ResultSet rs = statement.executeQuery(sql);
 		    
@@ -70,7 +79,7 @@ public class ActorManager {
 		Connection connection = null;
 		String sql = "select * from actor where ID = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, actorId);
 			ResultSet rs = statement.executeQuery();
@@ -92,7 +101,7 @@ public class ActorManager {
 		Connection connection = null;
 		String sql = "update Actor set ID = ?, firstname = ?, lastname = ?, dateofbirth = ? where id = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, actor.getID());
 			statement.setString(2, actor.getFirstName());
@@ -110,7 +119,7 @@ public class ActorManager {
 		Connection connection = null;
 		String sql = "delete from Actor where id = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, actorId);
 			statement.execute();

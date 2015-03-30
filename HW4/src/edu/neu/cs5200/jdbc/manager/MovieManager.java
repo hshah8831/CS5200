@@ -1,34 +1,42 @@
 package edu.neu.cs5200.jdbc.manager;
 
 	
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Connection; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 import edu.neu.cs5200.jdbc.entity.Movie;
 
 public class MovieManager {
 	static java.util.Date today = new java.util.Date();
 	static java.sql.Date date = new java.sql.Date(today.getTime());
-	public Connection getConnection(){
-		Connection connection = null;
+	DataSource ds;
+	public MovieManager(){
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/movieschema" , "root" , "abcusa123");
-		} catch (SQLException e) {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		return connection;
 	}
+
 	public void createMovie(Movie newMovie) throws SQLException{
 		Connection connection = null;
 		String sql = "insert into movie values (?,?,?,?)";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newMovie.getID());
 			statement.setString(3, newMovie.getPosterImage());
@@ -47,7 +55,7 @@ public class MovieManager {
 		Connection connection = null;
 		String sql = "select * from movie";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 		    ResultSet rs = statement.executeQuery(sql);
 		    
@@ -72,7 +80,7 @@ public class MovieManager {
 		Connection connection = null;
 		String sql = "select * from movie where id = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, movieId);
 			ResultSet rs = statement.executeQuery();
@@ -96,7 +104,7 @@ public class MovieManager {
 		Connection connection = null;
 		String sql = "update Movie set title = ?, posterImage = ?, releaseDate = ? where id = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(4, movie.getID());
 			statement.setString(2, movie.getPosterImage());
@@ -115,7 +123,7 @@ public class MovieManager {
 		Connection connection = null;
 		String sql = "delete from Movie where id = ?";
 		try{
-			connection = getConnection();
+			connection = ds.getConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, movieId);
 			statement.execute();
@@ -126,50 +134,4 @@ public class MovieManager {
 			connection.close();
 		}
 	};
-	public static void main(String[] args) {
-		MovieManager manager = new MovieManager();
-		Movie movie = new Movie();
-		List<Movie> movies = new ArrayList<Movie>();
-		movie.setID("2");
-		movie.setTitle("Avatar2");
-		movie.setReleaseDate(new Date());
-		movie.setPosterImage("ActionThrillerMovie");
-		try {
-			movies = manager.readAllMovies();
-			for(int i = 0; i < movies.size(); i++){
-				System.out.println(movies.get(i).getID());
-				System.out.println(movies.get(i).getTitle());
-				System.out.println(movies.get(i).getPosterImage());
-				System.out.println(movies.get(i).getReleaseDate());
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		try {
-			manager.updateMovie("1", movie);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			manager.deleteMovie("1");
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			movies = manager.readAllMovies();
-			for(int i = 0; i < movies.size(); i++){
-				System.out.println(movies.get(i).getID());
-				System.out.println(movies.get(i).getTitle());
-				System.out.println(movies.get(i).getPosterImage());
-				System.out.println(movies.get(i).getReleaseDate());
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
 }
