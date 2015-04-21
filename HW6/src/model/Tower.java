@@ -3,6 +3,9 @@ package model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.List;
 
@@ -13,17 +16,23 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Tower.findAll", query="SELECT t FROM Tower t")
+@XmlRootElement
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@XmlAttribute
 	private int id;
 
+	@XmlAttribute
 	private double height;
 
+	@XmlAttribute
 	private String name;
 
+	@XmlAttribute
 	private int sides;
 
 	//bi-directional many-to-one association to Equipment
