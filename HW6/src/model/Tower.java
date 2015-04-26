@@ -3,9 +3,10 @@ package model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import java.util.List;
 
@@ -14,25 +15,19 @@ import java.util.List;
  * The persistent class for the tower database table.
  * 
  */
+@XmlRootElement
 @Entity
 @NamedQuery(name="Tower.findAll", query="SELECT t FROM Tower t")
-@XmlRootElement
-@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@XmlAttribute
 	private int id;
 
-	@XmlAttribute
 	private double height;
 
-	@XmlAttribute
 	private String name;
 
-	@XmlAttribute
 	private int sides;
 
 	//bi-directional many-to-one association to Equipment
@@ -40,13 +35,14 @@ public class Tower implements Serializable {
 	private List<Equipment> equipments;
 
 	//bi-directional many-to-one association to Site
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="siteId")
 	private Site site;
 
 	public Tower() {
 	}
 
+	@XmlAttribute
 	public int getId() {
 		return this.id;
 	}
@@ -55,6 +51,7 @@ public class Tower implements Serializable {
 		this.id = id;
 	}
 
+	@XmlAttribute
 	public double getHeight() {
 		return this.height;
 	}
@@ -63,6 +60,7 @@ public class Tower implements Serializable {
 		this.height = height;
 	}
 
+	@XmlAttribute
 	public String getName() {
 		return this.name;
 	}
@@ -71,6 +69,7 @@ public class Tower implements Serializable {
 		this.name = name;
 	}
 
+	@XmlAttribute
 	public int getSides() {
 		return this.sides;
 	}
@@ -79,6 +78,7 @@ public class Tower implements Serializable {
 		this.sides = sides;
 	}
 
+	@XmlElement(name="equipment")
 	public List<Equipment> getEquipments() {
 		return this.equipments;
 	}
@@ -101,6 +101,7 @@ public class Tower implements Serializable {
 		return equipment;
 	}
 
+	@XmlTransient
 	public Site getSite() {
 		return this.site;
 	}

@@ -3,49 +3,41 @@ package model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 /**
  * The persistent class for the equipment database table.
  * 
  */
+@XmlRootElement
 @Entity
 @NamedQuery(name="Equipment.findAll", query="SELECT e FROM Equipment e")
-@XmlRootElement
-@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Equipment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@XmlAttribute
 	private int id;
-	
-	@XmlAttribute
+
 	private String brand;
-	
-	@XmlAttribute
+
 	private String description;
 
-	@XmlAttribute
 	private String name;
 
-	@XmlAttribute
 	private double price;
 
 	//bi-directional many-to-one association to Tower
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="towerId")
-	@XmlElement(name="tower")
 	private Tower tower;
 
 	public Equipment() {
 	}
 
+	@XmlAttribute
 	public int getId() {
 		return this.id;
 	}
@@ -54,6 +46,7 @@ public class Equipment implements Serializable {
 		this.id = id;
 	}
 
+	@XmlAttribute
 	public String getBrand() {
 		return this.brand;
 	}
@@ -62,6 +55,7 @@ public class Equipment implements Serializable {
 		this.brand = brand;
 	}
 
+	@XmlAttribute
 	public String getDescription() {
 		return this.description;
 	}
@@ -70,6 +64,7 @@ public class Equipment implements Serializable {
 		this.description = description;
 	}
 
+	@XmlAttribute
 	public String getName() {
 		return this.name;
 	}
@@ -78,6 +73,7 @@ public class Equipment implements Serializable {
 		this.name = name;
 	}
 
+	@XmlAttribute
 	public double getPrice() {
 		return this.price;
 	}
@@ -86,6 +82,7 @@ public class Equipment implements Serializable {
 		this.price = price;
 	}
 
+	@XmlTransient
 	public Tower getTower() {
 		return this.tower;
 	}

@@ -7,16 +7,13 @@
 			</head>
 			<body>
 				<ol>
-					<xsl:for-each select="siteList/site">
+					<xsl:for-each select="siteList/site/tower/equipment">
 						<li>
 							<xsl:value-of select="@name" />
-							<ul>
-								<xsl:for-each select="tower">
-									<li>
-										<xsl:value-of select="@name" />
-									</li>
-								</xsl:for-each>
-							</ul>
+							Site/Tower: 
+							<xsl:value-of select="../@name" />
+							/
+							<xsl:value-of select="../../@name" />
 						</li>
 					</xsl:for-each>
 				</ol>

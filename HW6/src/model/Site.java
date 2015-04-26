@@ -3,7 +3,6 @@ package model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,44 +14,29 @@ import java.util.List;
  * The persistent class for the site database table.
  * 
  */
+@XmlRootElement
 @Entity
 @NamedQuery(name="Site.findAll", query="SELECT s FROM Site s")
-@XmlRootElement
-@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Site implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@XmlAttribute
 	private int id;
 
-	public Site(int id, double latitude, double longitude, String name) {
-		super();
-		this.id = id;
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.name = name;
-//		this.towers = towers;
-	}
-
-	@XmlAttribute
 	private double latitude;
 
-	@XmlAttribute
 	private double longitude;
 
-	@XmlAttribute
 	private String name;
 
 	//bi-directional many-to-one association to Tower
 	@OneToMany(mappedBy="site")
-	@XmlElement(name="tower")
 	private List<Tower> towers;
 
 	public Site() {
 	}
 
+	@XmlAttribute
 	public int getId() {
 		return this.id;
 	}
@@ -61,6 +45,7 @@ public class Site implements Serializable {
 		this.id = id;
 	}
 
+	@XmlAttribute
 	public double getLatitude() {
 		return this.latitude;
 	}
@@ -69,6 +54,7 @@ public class Site implements Serializable {
 		this.latitude = latitude;
 	}
 
+	@XmlAttribute
 	public double getLongitude() {
 		return this.longitude;
 	}
@@ -77,6 +63,7 @@ public class Site implements Serializable {
 		this.longitude = longitude;
 	}
 
+	@XmlAttribute
 	public String getName() {
 		return this.name;
 	}
@@ -85,6 +72,7 @@ public class Site implements Serializable {
 		this.name = name;
 	}
 
+	@XmlElement(name="tower")
 	public List<Tower> getTowers() {
 		return this.towers;
 	}
