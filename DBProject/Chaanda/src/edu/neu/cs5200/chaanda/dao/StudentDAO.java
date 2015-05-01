@@ -28,7 +28,7 @@ public class StudentDAO {
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("Chaanda");
 	EntityManager em = null;
 
-	//student login
+	//returns the person with valid username and associated password
 	public Person universityLogin(String userName , String password){
 
 		em = factory.createEntityManager();

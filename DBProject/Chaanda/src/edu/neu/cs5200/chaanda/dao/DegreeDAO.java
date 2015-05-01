@@ -10,6 +10,7 @@ public class DegreeDAO {
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("Chaanda");
 	EntityManager em = null;
 
+	//inserts a degree entity into the database
 	public void createStudent(Degree degree) 
 	{
 		em = factory.createEntityManager();

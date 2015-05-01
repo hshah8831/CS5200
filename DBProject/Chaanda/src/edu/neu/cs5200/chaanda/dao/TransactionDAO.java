@@ -11,7 +11,7 @@ public class TransactionDAO
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("Chaanda");
 	EntityManager em = factory.createEntityManager();
 
-	// Inserts a mapping between a donor and a university
+	// Inserts a mapping between a donor and a student(transaction)
 	public void insertTransaction(Transaction txn)
 	{
 		em = factory.createEntityManager();
