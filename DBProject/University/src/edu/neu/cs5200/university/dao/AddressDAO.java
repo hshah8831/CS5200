@@ -12,6 +12,7 @@ public class AddressDAO
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("University");
 	EntityManager em = null;
 	
+	//Inserts an address record in the database
 	public void insertAddress(Address address)
 	{
 		em = factory.createEntityManager();

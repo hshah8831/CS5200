@@ -11,7 +11,7 @@ public class DegreeDAO {
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("University");
 	EntityManager em = null;
 
-	//get tuition fee of student
+	//get tuition fee of a particular degree
 	public Degree getTuitionFee(Integer degreeId){
 		return em.find(Degree.class, degreeId);
 

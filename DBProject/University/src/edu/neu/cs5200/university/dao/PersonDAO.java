@@ -9,12 +9,14 @@ public class PersonDAO {
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("University");
 	EntityManager em = null;
 
+	//gets a person record from the Id = personId
 	public Person getPersonDetailsForStudentLandingPage(Integer personId){
 		em = factory.createEntityManager();
 		return em.find(Person.class, personId);
 	}
 
-	//person login
+	//checks if the userName exists in the database and authenticates the 
+	//password, if everything's is OK returns the person record.
 	public Person universityLogin(String userName , String password){
 
 		em = factory.createEntityManager();
@@ -42,6 +44,7 @@ public class PersonDAO {
 		}
 	}
 
+	//Inserts a person record
 	public void insertPerson(Person person)
 	{
 		em = factory.createEntityManager();
@@ -51,14 +54,6 @@ public class PersonDAO {
 
 		em.getTransaction().commit();
 		em.close();
-	}
-
-	public static void main(String[] args){
-		PersonDAO dao = new PersonDAO();
-
-		Person p = dao.getPersonDetailsForStudentLandingPage(1);
-
-		System.out.println(p.getPersonName());
 	}
 }
 

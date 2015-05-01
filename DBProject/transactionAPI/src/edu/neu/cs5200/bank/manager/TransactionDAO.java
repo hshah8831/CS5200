@@ -23,7 +23,8 @@ public class TransactionDAO
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("transactionAPI");
 	EntityManager em = null;
 
-	//removes a row, with siteId, and fetches the updated database
+	//takes payers and receivers account number and payers passkey and transaction amount
+	//after passkey validation is cleared makes a transaction of amount from payer to reciever.
 	@GET
 	@Path("/{payerID}/{passkey}/{recieverID}/{amount}")
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -81,6 +82,7 @@ public class TransactionDAO
 		}
 	}
 
+	//returns all the account numbers that a holder will have with the bank
 	@SuppressWarnings("unused")
 	@GET
 	@Path("/{name}")
