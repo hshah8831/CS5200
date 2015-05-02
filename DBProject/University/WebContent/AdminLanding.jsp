@@ -44,38 +44,10 @@ body {
 
 			String action = request.getParameter("action");
 
-			//if ("approve".equals(action)) {
-			//	Integer stuId = Integer.parseInt(request.getParameter("stuId").toString());
-			//	Student s = dao.getStudentDetailsForStudentLandingPage(stuId);
-
-			//sfnd = s.getStudentfunddetail();
-			//sfnd.setFundPetitionStatus(2);
-
-			//sfnd = sfnddao.updateStudentFundDetails(stuId, sfnd);
-			//s.setStudentfunddetail(sfnd);
-
-			//dao.updateStudent(stuId, s);
-			//}
-
-			//else if ("reject".equals(action)) {
-			//	Integer stuId = Integer.parseInt(request.getParameter("stuId").toString());
-			//	Student s = dao.getStudentDetailsForStudentLandingPage(stuId);
-			//	//s.getStudentfunddetail().setFundPetitionStatus(3);
-
-			//sfnd = s.getStudentfunddetail();
-			//sfnd.setFundPetitionStatus(3);
-
-			//sfnd = sfnddao.updateStudentFundDetails(stuId, sfnd);
-			//s.setStudentfunddetail(sfnd);
-
-			//dao.updateStudent(stuId, s);
-			//}
-
 			if ("reject".equals(action)) {
-				Integer stuId = Integer.parseInt(request.getParameter("stuId").toString());
+				Integer stuId = Integer.parseInt(request.getParameter("stuId")
+						.toString());
 				Student s = dao.getStudentDetailsForStudentLandingPage(stuId);
-				//s.getStudentfunddetail().setFundPetitionStatus(3);
-
 				sfnd = s.getStudentfunddetail();
 				sfnd.setFundPetitionStatus(3);
 
@@ -83,7 +55,6 @@ body {
 				s.setStudentfunddetail(sfnd);
 				out.println(stuId);
 
-				//dao.updateStudent(st''uId,' s);
 				response.sendRedirect("AdminLanding.jsp");
 			}
 
@@ -91,31 +62,30 @@ body {
 				Integer stuId = Integer.parseInt(request.getParameter("stuId")
 						.toString());
 				Student s = dao.getStudentDetailsForStudentLandingPage(stuId);
-				
+
 				if (dao.post(s) == 200) {
 					sfnd = s.getStudentfunddetail();
 					sfnd.setFundPetitionStatus(2);
 
 					sfnd = sfnddao.updateStudentFundDetails(stuId, sfnd);
 					s.setStudentfunddetail(sfnd);
-					
-					
 		%>
 
 		File migrated
-		<% } else { %>
+		<%
+			} else {
+		%>
 		File migration failed!!!
 		<%
 			}
-
-				//dao.updateStudent(stuId, s);
 				response.sendRedirect("AdminLanding.jsp");
 			}
 		%>
 	</h2>
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">
-			<a href="UniversityLogin.jsp" class="navbar-brand">Northeastern University</a>
+			<a href="UniversityLogin.jsp" class="navbar-brand">Northeastern
+				University</a>
 			<div class="collapse navbar-collapse navHeaderCollapse">
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="UniversityLogin.jsp">Home</a></li>

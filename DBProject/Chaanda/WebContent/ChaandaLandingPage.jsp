@@ -23,10 +23,6 @@ body {
 }
 </style>
 </head>
-
-<!-- <script type="text/javascript">
-	document.getElementById("studentIdInput").style.display = 'none';
-</script> -->
 <body>
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">

@@ -1,9 +1,7 @@
 package edu.neu.cs5200.chaanda.dao;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -12,10 +10,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +52,6 @@ public class StudentDAO {
 
 		}
 	}
-
 
 	//Fill and edit form
 	public Student filForm(Student student){
@@ -144,51 +137,13 @@ public class StudentDAO {
 		return em.createQuery(query).getResultList();
 	}
 
-	//Exports the student to an xml file.
-	public void exportStudentDatabaseToXmlFile(Student student, String xmlFileName) 
-	{
-
-		try 
-		{
-			JAXBContext jaxb = JAXBContext.newInstance(Student.class);
-			Marshaller marshaller = jaxb.createMarshaller();
-			marshaller.marshal(student, new File(xmlFileName));
-
-
-		} catch (JAXBException e) 
-		{
-			e.printStackTrace();
-		}
-	}
-
-	//Exports the student to an xml file.
-	public Student persistXmlFiletoStudent(File xmlFileName) 
-	{
-		JAXBContext context;
-		try 
-		{
-			//			JAXBContext jaxb = JAXBContext.newInstance(Student.class);
-			//			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-			//			return (Student) unmarshaller.unmarshal(xmlFileName);
-
-			context = JAXBContext.newInstance(Student.class);
-			Unmarshaller m = context.createUnmarshaller();
-			//StreamSource source = new StreamSource(new StringReader(input))
-			return (Student) m.unmarshal(xmlFileName);
-		} catch (JAXBException e) 
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	//exposed as web service, takes a JSON string and persists the data in database
 	@POST
 	@Path("/insert")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createStudent(String sjsn) 
 	{
-		//System.out.println(student);
 
 		ObjectMapper mapper = new ObjectMapper();
 		Student student = null;
@@ -209,37 +164,25 @@ public class StudentDAO {
 		adao.insertAddress(student.getPerson().getAddress());
 
 		PersonDAO pdao = new PersonDAO();
-		//		Person p = student.getPerson();
-		//		p.setDateOfBirth(null);
 		pdao.insertPerson(student.getPerson());
 
 		UniversityDAO udao = new UniversityDAO();
 		University u = udao.getUniversityfromCollegeID(student.getDegree().getCollege().getCollegeId());
 		student.getDegree().getCollege().setUniversity(u);
 
-
-		//student.set
-
-		//insertStudent(student);
-
 		insertQueryforStudnt(student);
-		
+
 		insertFundDetailsQuery(student);
 
 		return("success");
 
 	}
 
+	// Inserts student record to database
 	public void insertQueryforStudnt(Student student)
 	{
 		em = factory.createEntityManager();
 		em.getTransaction().begin();
-
-		//		String query = "INSERT INTO Student s VALUES " + student.getStudentId() + "," + 
-		//				student.getEnrolledYear() + "," +
-		//				student.getDegree().getDegreeId() + "," +
-		//				student.getGpa() + "," +
-		//				student.getFamilyIncome();
 
 		Query query = em.createNativeQuery("INSERT INTO student (studentId, enrolledYear,degreeId,gpa,familyIncome) " +
 				" VALUES(?,?,?,?,?)");
@@ -249,15 +192,16 @@ public class StudentDAO {
 		query.setParameter(4, student.getGpa());
 		query.setParameter(5, student.getFamilyIncome());
 		query.executeUpdate(); 
-		
+
 		em.getTransaction().commit();
 		em.close();
-		
-		
-		
+
+
+
 		System.out.println("student inserted");
 	}
-	
+
+	// Inserts student fund details of a student to database	
 	public void insertFundDetailsQuery(Student student)
 	{
 		BigDecimal zero = new BigDecimal(0);
@@ -275,38 +219,24 @@ public class StudentDAO {
 
 		em.getTransaction().commit();
 		em.close();
-		
+
 		System.out.println("student inserted");
 
 	}
 
-	public void insertStudent(Student student)
-	{
-		em = factory.createEntityManager();
-		em.getTransaction().begin();
-
-		//		em.persist(student.getPerson().getAddress());
-		//		//em.persist(student.getPerson());
-		//		//em.persist(student.);
-		em.persist(student.getStudentfunddetail());
-		em.persist(student);
-
-		em.getTransaction().commit();
-		em.close();
-	}
-
-
+	//deletes person from database
 	public void deletePerson(Integer studentId){
 		em = factory.createEntityManager();
 		em.getTransaction().begin();
-		
+
 		Person p = em.find(Person.class, studentId);
 		em.remove(p);
-		
+
 		em.getTransaction().commit();
 		em.close();
 	}
-	
+
+	// updates student's fund details to database
 	public void updateStudentFundDetail(Studentfunddetail student) {
 
 		em = factory.createEntityManager();
@@ -320,99 +250,6 @@ public class StudentDAO {
 	}
 
 
-	public static void main(String[] args) 
-	{
-		StudentDAO dao = new StudentDAO();
-		Date date = new Date();
-		BigDecimal big = new BigDecimal(44000);
-		BigDecimal gpa = new BigDecimal(3.5);
-
-		//		List<Site> sites = dao.findAllSites();
-		/*Student student = dao.getStudentDetailsForStudentLandingPage(1);
-		dao.createStudent(student);
-
-		System.out.println(student.getStudentId());
-		System.out.println(student.getPerson().getPersonName());
-		System.out.println(student.getDegree().getCollege().getCollegeName());*/
-
-		//dao.exportStudentDatabaseToXmlFile(student, "student.xml");
-
-		//		String sjsn = {"studentId":103,"enrolledYear":1420434000000,"familyIncome":1000.00,"gpa":3.5,"degree":{"degreeId":1,"degreeName":"MSCS","duration":2,"tuition":44000,"college":{"collegeId":2,"collegeName":"CCIS","university":null}},"person":{"personId":103,"dateOfBirth":594277200000,"email":"shah.hard@husky.neu.edu","gender":"male","password":"abcusa123","personName":"Hardik Shah","phone":123456789,"roleName":"student","userName":"shah.hard","address":{"addressId":1,"city":"Boston","country":"USA","state":"MA","street":"12C Smith Street","zipCode":2120}},"studentfunddetail":{"studentId":103,"fundPetitionStatus":1,"fundRequired":10.00,"petitionDescription":"Please fund me"}}""
-
-		Address a = new Address(10,"Boston","USA","MA","12C Smith Street",2120);
-		Person p = new Person(103,date,"shah.hard@husky.neu.edu","male","abcusa123","Hardik Shah",123456789,"student","shah.hard",a);
-		University u = null;
-		College c = new College(2,"CCIS",null);
-		Degree d = new Degree(1,"MSCS",2,big,c);
-		//Studentfunddetail sfnd = new Studentfunddetail(p.getPersonId(), big, big, null, 0, null);
-		//Student s = new Student(p.getPersonId(),date, big, gpa, d, sfnd, null, p);
-
-		//dao.insertFundDetailsQuery(s);
-
-		AddressDAO adao = new AddressDAO();
-		//adao.insertAddress(a);
-		//		
-		//		PersonDAO pdao = new PersonDAO();
-		//		pdao.insertPerson(p);
-		//		
-		//		//CollegeDAO cdao = new CollegeDAO();
-		//		//cdao.insertCollege();
-		//		
-		//		DegreeDAO ddao = new DegreeDAO();
-		//		//ddao.insertDegree();
-		//		
-		//dao.insertQueryforStudnt(s);
-
-		//File file = new File("student-3.xml");
-
-		//Student student = dao.persistXmlFiletoStudent(file);
-
-		//		System.out.println(student.getStudentId());
-		//		System.out.println(student.getPerson().getPersonName());
-
-		//		Address a = new Address();
-		//		a.setCity(student.getPerson().getAddress().getCity());
-		//		a.setCountry(student.getPerson().getAddress().getCountry());
-		//		a.setState(student.getPerson().getAddress().getState());
-		//		a.setStreet(student.getPerson().getAddress().getStreet());
-		//		a.setZipCode(student.getPerson().getAddress().getZipCode());
-		//
-		//		AddressDAO aDao = new AddressDAO();
-		//		aDao.insertAddress(a);
-		//
-		//		Person p = new Person();
-		//		p.setAddress(a);
-		//		p.setEmail(student.getPerson().getEmail());
-		//		p.setPassword(student.getPerson().getPassword());
-		//		p.setRoleName(student.getPerson().getRoleName());
-		//
-		//		p.setPersonName(student.getPerson().getPersonName());
-		//		//p.setRole(r);
-		//		p.setUserName(student.getPerson().getUserName());
-		//
-		//		PersonDAO pDao = new PersonDAO();
-		//		pDao.insertPerson(p);
-		//		
-		//		Degree d = new Degree();
-		//		d.setCollegeName(student.getDegree().getCollegeName());
-		//		d.setDegreeName(student.getDegree().getDegreeName());
-		//		d.setDuration(student.getDegree().getDuration());
-		//		d.setTuition(student.getDegree().getTuition());
-		//		DegreeDAO dDao = new DegreeDAO();
-		//		dDao.createStudent(d);
-
-
-		//System.out.println(student.getDegree().getUniversity().getUniversityName());
-
-		//		dao.convertXmlFileToOutputFile("sites.xml", "sites2equipment.html", "sites2equipment.xsl");
-
-		//List<Student> studentswantingfund = dao.getStudentFromUni("wentworth");
-
-		//		for(Student s : studentswantingfund){
-		//			System.out.println(s.getStudentId());
-		//		}
-
-
-	}
 }
+
 

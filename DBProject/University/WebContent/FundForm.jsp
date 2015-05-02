@@ -36,8 +36,6 @@ body {
 
 				Student s = dao.getStudentDetailsForStudentLandingPage(personId);
 
-				//Degree d = dao.getTuitionFee(s.getDegree().getDegreeId());
-
 				Degree d = s.getDegree();
 
 				if (s.getStudentfunddetail().getFundPetitionStatus() == 0) {

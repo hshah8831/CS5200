@@ -46,7 +46,8 @@ body {
 			for (University un : unis) {
 				u = un;
 			}
-
+			
+			// set registered field of universiy to 1 signifies the university is registered to chaanda
 			u.setRegistered(1);
 
 			dao.registerUniversity(u.getUniversityId(), u);

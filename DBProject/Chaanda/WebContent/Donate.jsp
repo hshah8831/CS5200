@@ -63,9 +63,6 @@ body {
 		
 		String accounts = client.getAccountNumbers(p.getPersonName());
 		
-		//out.println(accounts);
-		//List<String> list = new ArrayList<String>(Arrays.asList(accounts.split(" , ")));
-		
 		
 		 List<Integer> list = new ArrayList<Integer>();
 		 for (int i = 0, j, n = accounts.length(); i < n; i = j + 1) {
@@ -98,7 +95,6 @@ body {
 
 				BigDecimal sum = s.getStudentfunddetail().getFundCollected().add(
 						new BigDecimal(amount));
-				//s.getStudentfunddetail().setFundCollected(sum);
 
 				Studentfunddetail sf = new Studentfunddetail();
 				sf = s.getStudentfunddetail();
@@ -112,7 +108,6 @@ body {
 	<a href="ChaandaLandingPage.jsp" class="btn btn-success">Back</a>
 
 	<%
-		//response.sendRedirect("ChaandaLandingPage.jsp");
 
 			} else {
 				out.println("Sorry your donation could not be processed . Please try again later");
@@ -120,7 +115,6 @@ body {
 
 		} else {
 			studentId = Integer.parseInt(request.getParameter("studentId"));
-			//out.println(studentId);
 			s = dao.getStudentDetailsForStudentLandingPage(studentId);
 		}
 

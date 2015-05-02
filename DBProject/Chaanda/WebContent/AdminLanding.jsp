@@ -21,6 +21,7 @@
 #element2 {
 	float: right;
 }
+
 body {
 	background:
 		url(http://download.free-download-web.com/files/2014/09/Cartoon-study-article-vector-material-2.jpg)
@@ -35,33 +36,20 @@ body {
 <body>
 	<h2>
 		<%
-		StudentDAO dao = new StudentDAO();
-		String action = request.getParameter("action");
-		if ("add".equals(action)) {
-			String input = request.getParameter("file");
-			
-			//out.println(input);
-			
-			File f = new File(input);
-			
-			Student s = dao.persistXmlFiletoStudent(f);
-			out.println(s.getPerson().getPersonName());
-			
-		}
-		
+			StudentDAO dao = new StudentDAO();
+			String action = request.getParameter("action");
 			String userName = session.getAttribute("userName").toString();
 			Integer personId = Integer.parseInt(session
 					.getAttribute("personId").toString());
-			
 
 			UniversityDAO uDao = new UniversityDAO();
 
 			University u = uDao.getUniversityforadmin(personId);
 
-			//String action = request.getParameter("action");
-
-			if((request.getParameter("deleteStudentId") !=null) && !(request.getParameter("deleteStudentId").isEmpty() )){
-				dao.deletePerson(Integer.parseInt(request.getParameter("deleteStudentId")));
+			if ((request.getParameter("deleteStudentId") != null)
+					&& !(request.getParameter("deleteStudentId").isEmpty())) {
+				dao.deletePerson(Integer.parseInt(request
+						.getParameter("deleteStudentId")));
 			}
 		%>
 	</h2>
@@ -84,49 +72,55 @@ body {
 	<br />
 	<form action="AdminLanding.jsp">
 		<div class="container">
-		<%
+			<%
+				List<Student> studentsApproved = dao.getStudentsApproved(u
+						.getUniversityId());
+			%>
 
-			List<Student> studentsApproved = dao.getStudentsApproved(u.getUniversityId()); 
-		%>
-
-	<br><br><br>
-		<h3>List of students being funded</h3>
-
-		<%
-			if (studentsApproved.size() == 0) {
-		%>
-		<h4>No students have requested funding</h4>
-		<%
-			} else {
-		%>
-		<table class="table table-striped">
-			<tr>
-				<td>Student name</td>
-				<td>Tuition fee Required</td>
-				<td>Tuition fee Collected</td>
-				<td>Tuition fee to be collected</td>
-			</tr>
+			<br>
+			<br>
+			<br>
+			<h3>List of students being funded</h3>
 
 			<%
-				for (Student s : studentsApproved) {
+				if (studentsApproved.size() == 0) {
 			%>
-			<tr>
-				<td><a
-					href="StudentDetails.jsp?studentId=<%=s.getPerson().getPersonId()%>"><%=s.getPerson().getPersonName()%></a></td>
-				<td><%=s.getStudentfunddetail().getFundRequired()%></td>
-				<td><%=s.getStudentfunddetail().getFundCollected()%></td>
-				<td><%=s.getStudentfunddetail().getFundRequired()
-							.subtract(s.getStudentfunddetail().getFundCollected())%></td>
-							<td><a class="btn btn-warning" name=action value="delete"
-						href="AdminLanding.jsp?deleteStudentId=<%=s.getPerson().getPersonId()%>">Delete from chaanda</a></td>
-			</tr>
+			<h4>No students have requested funding</h4>
+			<%
+				} else {
+			%>
+			<table class="table table-striped">
+				<tr>
+					<td>Student name</td>
+					<td>Tuition fee Required</td>
+					<td>Tuition fee Collected</td>
+					<td>Tuition fee to be collected</td>
+				</tr>
+
+				<%
+					for (Student s : studentsApproved) {
+				%>
+				<tr>
+					<td><a
+						href="StudentDetails.jsp?studentId=<%=s.getPerson().getPersonId()%>"><%=s.getPerson().getPersonName()%></a></td>
+					<td><%=s.getStudentfunddetail().getFundRequired()%></td>
+					<td><%=s.getStudentfunddetail().getFundCollected()%></td>
+					<td><%=s
+							.getStudentfunddetail()
+							.getFundRequired()
+							.subtract(
+									s.getStudentfunddetail().getFundCollected())%></td>
+					<td><a class="btn btn-warning" name=action value="delete"
+						href="AdminLanding.jsp?deleteStudentId=<%=s.getPerson().getPersonId()%>">Delete
+							from chaanda</a></td>
+				</tr>
+				<%
+					}
+				%>
+			</table>
 			<%
 				}
 			%>
-		</table>
-		<%
-			}
-		%>
 		</div>
 	</form>
 </body>
