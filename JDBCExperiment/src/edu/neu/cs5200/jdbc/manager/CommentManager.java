@@ -1,0 +1,184 @@
+package edu.neu.cs5200.jdbc.manager;
+
+import java.sql.Connection; 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import edu.neu.cs5200.jdbc.entity.Comment;
+
+public class CommentManager {
+	static java.util.Date today = new java.util.Date();
+	static java.sql.Date date = new java.sql.Date(today.getTime());
+	DataSource ds;
+	public CommentManager(){
+		try {
+
+			Context ctx = new InitialContext();
+
+			ds = (DataSource)ctx.lookup("jdbc:mysql://localhost/movieschema");
+
+			System.out.println(ds);
+
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	public void createComment(Comment newComment) throws SQLException{
+		Connection connection = null;
+		String sql = "insert into comment values (?,?,?,?)";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, newComment.getComment());
+			statement.setString(2, newComment.getMovieID());
+			statement.setString(3, newComment.getUserID());
+			statement.setDate(4, date);
+			statement.execute();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+	};
+	public List<Comment> readAllComments() throws SQLException{
+		List<Comment> comments = new ArrayList<Comment>();
+		Connection connection = null;
+		String sql = "select * from comment";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+		    ResultSet rs = statement.executeQuery(sql);
+		    
+		    while (rs.next()){
+		    	Comment comment = new Comment();
+		    	comment.setComment(rs.getString("comment")); 
+		    	comment.setMovieID(rs.getString("movieid"));
+		    	comment.setUserID(rs.getString("userid"));
+		    	comment.setDate(rs.getDate("date"));
+		    	comments.add(comment);
+		    }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+		return comments;
+	};
+	public List<Comment> readAllCommentsForUsername(String username) throws SQLException{
+		List<Comment> comments = new ArrayList<Comment>();
+		Connection connection = null;
+		String sql = "select * from comment where userid = ?";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, username);
+		    ResultSet rs = statement.executeQuery(sql);
+		    
+		    while (rs.next()){
+		    	Comment comment = new Comment();
+		    	comment.setComment(rs.getString("comment")); 
+		    	comment.setMovieID(rs.getString("movieid"));
+		    	comment.setUserID(rs.getString("userid"));
+		    	comment.setDate(rs.getDate("date"));
+		    	comments.add(comment);
+		    }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+		return comments;
+	};
+	public List<Comment> readAllCommentsForMovie(String movieId) throws SQLException{
+		List<Comment> comments = new ArrayList<Comment>();
+		Connection connection = null;
+		String sql = "select * from comment where movieid = ?";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, movieId);
+		    ResultSet rs = statement.executeQuery(sql);
+		    
+		    while (rs.next()){
+		    	Comment comment = new Comment();
+		    	comment.setComment(rs.getString("comment")); 
+		    	comment.setMovieID(rs.getString("movieid"));
+		    	comment.setUserID(rs.getString("userid"));
+		    	comment.setDate(rs.getDate("date"));
+		    	comments.add(comment);
+		    }
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+		return comments;
+	};
+	public Comment readCommentForId(String commentId) throws SQLException{
+		Comment comment = new Comment();
+		Connection connection = null;
+		String sql = "select * from comment where comment = ?";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, commentId);
+			ResultSet rs = statement.executeQuery();
+			 while (rs.next()){
+				 comment.setComment(rs.getString("comment")); 
+				 comment.setMovieID(rs.getString("movieid"));
+				 comment.setUserID(rs.getString("userid"));
+				 comment.setDate(rs.getDate("date"));
+			    }   
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+		return comment;
+	};
+	public void updateComment(String commentId, String newComment) throws SQLException{
+		Connection connection = null;
+		String sql = "update Comment set comment = ?, date = ? where comment = ?";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, newComment);
+			statement.setDate(2, date);
+			statement.setString(3, commentId);
+			statement.execute();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+	};
+	public void deleteComment(String commentId) throws SQLException{
+		Connection connection = null;
+		String sql = "delete from Comment where comment = ?";
+		try{
+			connection = ds.getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, commentId);
+			statement.execute();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			connection.close();
+		}
+	};
+}

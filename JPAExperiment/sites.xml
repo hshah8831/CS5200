@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<siteList>
+	<site id="1" latitude="12.23" longitude="23.34" name="Site 1-upd">
+		<tower height="123.45" id="1" name="Tower A" sides="3">
+			<equipment brand="Brand 1" description="Description 1" id="1"
+				name="Equipment 1" price="1234.56" />
+			<equipment brand="Brand 2" description="Description 2" id="2"
+				name="Equipment 2" price="2345.67" />
+		</tower>
+		<tower height="234.56" id="2" name="Tower B" sides="4">
+			<equipment brand="Brand 3" description="Description 3" id="3"
+				name="Equipment 3" price="4321.54" />
+			<equipment brand="Brand 4" description="Description 4" id="4"
+				name="Equipment 4" price="5432.54" />
+		</tower>
+	</site>
+	<site id="2" latitude="21.32" longitude="43.54" name="Site 2">
+		<tower height="321.43" id="3" name="Tower C" sides="3">
+			<equipment brand="Brand 5" description="Description 5" id="5"
+				name="Equipment 5" price="3212.23" />
+			<equipment brand="Brand 6" description="Description 6" id="6"
+				name="Equipment 6" price="2367.43" />
+		</tower>
+		<tower height="213.43" id="4" name="Tower D" sides="4">
+			<equipment brand="Brand 7" description="Description 7" id="7"
+				name="Equipment 7" price="3456.65" />
+			<equipment brand="Brand 8" description="Description 8" id="10"
+				name="Equipment 8" price="5421.67" />
+		</tower>
+	</site>
+	<site id="3" latitude="50.23" longitude="50.34" name="Site 3" />
+</siteList>
